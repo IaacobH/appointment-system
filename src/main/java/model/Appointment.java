@@ -23,6 +23,10 @@ public class Appointment {
     }
 
     public void complete() {
+        if (status == AppointmentStatus.CANCELLED) {
+            System.out.println("A cancelled appointment cannot be completed.");
+            return;
+        }
         this.status = AppointmentStatus.COMPLETED;
     }
 
