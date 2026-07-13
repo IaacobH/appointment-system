@@ -12,6 +12,10 @@ public abstract class Person {
         this.email = email;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -22,6 +26,10 @@ public abstract class Person {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void sendEmail() {}
