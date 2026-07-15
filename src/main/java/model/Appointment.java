@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 
 public class Appointment {
     private long id;
-    private Service offeredService;
+    private OfferedService offeredService;
     private Professional professional;
     private Client client;
     private LocalDateTime dateTime;
     private AppointmentStatus status;
 
-    public Appointment(Service offeredService, Professional professional, Client client, LocalDateTime dateTime) {
+    public Appointment(OfferedService offeredService, Professional professional, Client client, LocalDateTime dateTime) {
         this.offeredService = offeredService;
         this.professional = professional;
         this.client = client;
@@ -47,15 +47,15 @@ public class Appointment {
         return status;
     }
 
-
     @Override
     public String toString() {
-        return "Appointment {\n" +
-                "offeredService: " + offeredService + "\n" +
-                "professional: " + professional + "\n" +
-                "client: " + client + "\n" +
-                "dateTime: " + dateTime + "\n" +
-                "status: " + status + "\n" +
-                "}";
+        return "Appointment{" +
+                "id=" + id +
+                ", offeredService=" + offeredService +
+                ", professional=" + professional +
+                ", client=" + client +
+                ", dateTime=" + dateTime +
+                ", status=" + status +
+                '}';
     }
 }

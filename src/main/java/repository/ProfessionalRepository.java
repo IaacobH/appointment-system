@@ -1,8 +1,6 @@
 package repository;
 
-import model.Client;
 import model.Professional;
-import model.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +9,7 @@ public class ProfessionalRepository {
 
 
     private final List<Professional> professionals = new ArrayList<>();
-    private long nextId = 1;
+    private int nextId = 1;
 
     public Professional save(Professional professional) {
         professional.setId(nextId);
@@ -24,7 +22,7 @@ public class ProfessionalRepository {
         return professionals;
     }
 
-    public Professional findById(long id){
+    public Professional findById(int id){
         for (Professional p : professionals){
             if (p.getId() == id){
                 return p;

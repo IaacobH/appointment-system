@@ -1,7 +1,6 @@
 package repository;
 
 import model.Appointment;
-import model.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 public class AppointmentRepository {
 
     public final List<Appointment> appointments = new ArrayList<>();
-private long nextId = 1;
+private int nextId = 1;
 
     public Appointment save(Appointment appointment){
         appointment.setId(nextId);
@@ -22,7 +21,7 @@ private long nextId = 1;
         return appointments;
     }
 
-    public Appointment findById(long id){
+    public Appointment findById(int id){
         for (Appointment a : appointments){
             if (a.getId() == id){
                 return a;

@@ -1,7 +1,6 @@
 package repository;
 
 import model.Client;
-import model.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 public class ClientRepository {
 
     private final List<Client> clients = new ArrayList<>();
-    private long nextId = 1;
+    private int nextId = 1;
 
     public Client save(Client client) {
         client.setId(nextId);
@@ -25,7 +24,7 @@ public class ClientRepository {
         return clients;
     }
 
-    public Client findById(long id){
+    public Client findById(int id){
         for (Client c : clients){
             if (c.getId() == id){
                 return c;
