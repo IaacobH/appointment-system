@@ -8,6 +8,7 @@ import repository.AppointmentRepository;
 import repository.ClientRepository;
 import repository.OfferedServiceRepository;
 import repository.ProfessionalRepository;
+import ui.App;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,10 +45,17 @@ public class AppointmentService {
         if(offeredService == null){
             throw new IllegalArgumentException("Service not found with id: "+offeredServiceId);
         }
-        return createAppointment(offeredService, professional, client, dateTime);
+        var appointment = createAppointment(offeredService, professional, client, dateTime);
+        appointmentRepository.save(appointment);
+
+        return appointment;
     }
 
     public List<Appointment> findAll(){
         return appointmentRepository.findAll();
+    }
+
+    public Appointment findById(int id){
+        return appointmentRepository.findById(id);
     }
 }

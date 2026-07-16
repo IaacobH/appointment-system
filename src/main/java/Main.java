@@ -6,6 +6,7 @@ import service.AppointmentService;
 import service.ClientService;
 import service.OfferedServiceService;
 import service.ProfessionalService;
+import ui.App;
 import ui.InputUtils;
 
 import java.time.LocalDateTime;
@@ -38,22 +39,14 @@ public class Main {
         offeredServiceService.register("consulta", 10);
         offeredServiceService.register("masaje", 30);
 
-        System.out.println(clientService.findAll());
-        var clientId = InputUtils.getInt(input, "Enter client id: ");
 
-        System.out.println(professionalService.findAll());
-        var professionalId = InputUtils.getInt(input, "enter professional id: ");
+        var app = new App();
+        app.run(input, clientService, professionalService, offeredServiceService, appointmentService);
 
-        System.out.println(offeredServiceService.findAll());
-        var offeredServiceId = InputUtils.getInt(input, "enter service id: ");
 
-        try {
-            appointmentService.createAppointmentWithId(clientId, professionalId, offeredServiceId, LocalDateTime.now());
-            System.out.println("Appointment created successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-        System.out.println(appointmentService.findAll());
+
+
+
 
     }
 }
