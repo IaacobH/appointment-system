@@ -2,6 +2,7 @@ package ui;
 
 import model.Appointment;
 import model.Professional;
+import model.Client;
 import service.AppointmentService;
 import service.ClientService;
 import service.OfferedServiceService;
@@ -38,22 +39,22 @@ public class App {
     }
 
     private void handleRegisterClient(Scanner input, ClientService clientService) {
-        String name = InputUtils.getString(input, "name: ");
-        String lastname = InputUtils.getString(input, "lastname: ");
-        String email = InputUtils.getString(input, "email: ");
-        clientService.register(name, lastname, email);
+        String name = InputUtils.getNonEmptyString(input, "name: ");
+        String lastname = InputUtils.getNonEmptyString(input, "lastname: ");
+        String email = InputUtils.getNonEmptyString(input, "email: ");
+        Client c = clientService.register(name, lastname, email);
     }
 
     private void handleRegisterProfessional(Scanner input, ProfessionalService professionalService) {
-        String name = InputUtils.getString(input, "name: ");
-        String lastname = InputUtils.getString(input, "lastname: ");
-        String email = InputUtils.getString(input, "email: ");
-        String speciality = InputUtils.getString(input, "speciality: ");
+        String name = InputUtils.getNonEmptyString(input, "name: ");
+        String lastname = InputUtils.getNonEmptyString(input, "lastname: ");
+        String email = InputUtils.getNonEmptyString(input, "email: ");
+        String speciality = InputUtils.getNonEmptyString(input, "speciality: ");
         professionalService.register(name, lastname, email, speciality);
     }
 
     private void handleRegisterOfferedService(Scanner input, OfferedServiceService offeredServiceService) {
-        String name = InputUtils.getString(input, "name: ");
+        String name = InputUtils.getNonEmptyString(input, "name: ");
         double price = InputUtils.getDouble(input, "price: ");
         offeredServiceService.register(name, price);
     }
@@ -69,8 +70,10 @@ public class App {
         System.out.println(offeredServiceService.findAll());
         var offeredServiceId = InputUtils.getInt(input, "enter service id: ");
 
+        var dateTime = InputUtils.getLocalDateTime(input);
+
         try {
-            var appointment = appointmentService.createAppointmentWithId(clientId, professionalId, offeredServiceId, LocalDateTime.now());
+            var appointment = appointmentService.createAppointmentWithId(clientId, professionalId, offeredServiceId, dateTime);
             System.out.println(appointment);
             System.out.println("Appointment created successfully.");
         } catch (IllegalArgumentException e) {
