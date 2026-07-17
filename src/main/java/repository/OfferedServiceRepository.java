@@ -4,6 +4,7 @@ import model.OfferedService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OfferedServiceRepository {
 
@@ -22,12 +23,12 @@ public class OfferedServiceRepository {
         return services;
     }
 
-    public OfferedService findById(int id){
+    public Optional<OfferedService> findById(int id){
         for (OfferedService s : services){
             if (s.getId() == id){
-                return s;
+                return Optional.of(s);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

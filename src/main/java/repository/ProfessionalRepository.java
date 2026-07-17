@@ -4,6 +4,7 @@ import model.Professional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProfessionalRepository {
 
@@ -22,12 +23,12 @@ public class ProfessionalRepository {
         return professionals;
     }
 
-    public Professional findById(int id){
+    public Optional<Professional> findById(int id){
         for (Professional p : professionals){
             if (p.getId() == id){
-                return p;
+                return Optional.of(p);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

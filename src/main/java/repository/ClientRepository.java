@@ -4,6 +4,7 @@ import model.Client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ClientRepository {
 
@@ -24,13 +25,13 @@ public class ClientRepository {
         return clients;
     }
 
-    public Client findById(int id){
+    public Optional<Client> findById(int id){
         for (Client c : clients){
             if (c.getId() == id){
-                return c;
+                return Optional.of(c);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 }

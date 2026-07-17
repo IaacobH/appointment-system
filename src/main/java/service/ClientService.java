@@ -22,7 +22,12 @@ public class ClientService {
     }
 
     public Client findById(int id){
-        return clientRepository.findById(id);
+        return clientRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Client not found with ID: " + id
+                        )
+                );
     }
 
     public List<Client> findAll(){

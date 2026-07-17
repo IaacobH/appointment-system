@@ -1,12 +1,14 @@
 package repository;
 
 import model.Appointment;
+import model.AppointmentStatus;
 import model.Client;
 import model.Professional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AppointmentRepository {
 
@@ -24,14 +26,16 @@ private int nextId = 1;
                 .anyMatch(appointment ->
                         appointment.getProfessional().equals(professional)
                                 && appointment.getDateTime().equals(dateTime)
+                                && appointment.getStatus() == AppointmentStatus.SCHEDULED
                 );
     }
 
-    public boolean existsByClientAndDateTime(Client client, LocalDateTime dateTime){
+    public boolean existsByClientAndDateTime(Client client, LocalDateTime dateTime) {
         return appointments.stream()
                 .anyMatch(appointment ->
                         appointment.getClient().equals(client)
-                            && appointment.getDateTime().equals(dateTime)
+                                && appointment.getDateTime().equals(dateTime)
+                                && appointment.getStatus() == AppointmentStatus.SCHEDULED
                 );
     }
 
@@ -39,12 +43,12 @@ private int nextId = 1;
         return appointments;
     }
 
-    public Appointment findById(int id){
+    public Optional<Appointment> findById(int id){
         for (Appointment a : appointments){
             if (a.getId() == id){
-                return a;
+                return Optional.of(a);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

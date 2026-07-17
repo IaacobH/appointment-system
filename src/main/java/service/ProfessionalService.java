@@ -13,14 +13,15 @@ public class ProfessionalService {
         this.professionalRepository = professionalRepository;
     }
 
-    public Professional register(String name, String lastname, String email, String speciality){
+    public void register(String name, String lastname, String email, String speciality){
         Professional professional = new Professional(name, lastname, email, speciality);
         professionalRepository.save(professional);
-        return professional;
     }
 
     public Professional findById(int id){
-        return professionalRepository.findById(id);
+        return professionalRepository.findById(id)
+                .orElseThrow(()->
+                        new IllegalArgumentException("no professional found with id "+id));
     }
 
     public List<Professional> findAll(){

@@ -5,10 +5,7 @@ import model.Client;
 import model.OfferedService;
 import model.Professional;
 import repository.AppointmentRepository;
-import repository.ClientRepository;
-import repository.OfferedServiceRepository;
 import repository.ProfessionalRepository;
-import ui.App;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,14 +13,14 @@ import java.util.List;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final ProfessionalRepository professionalRepository;
-    private final OfferedServiceRepository offeredServiceRepository;
-    private final ClientRepository clientRepository;
+    private final ProfessionalService professionalService;
+    private final OfferedServiceService offeredServiceService;
+    private final ClientService clientService;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, ClientRepository clientRepository, ProfessionalRepository professionalRepository, OfferedServiceRepository offeredServiceRepository) {
-        this.clientRepository = clientRepository;
-        this.professionalRepository = professionalRepository;
-        this.offeredServiceRepository = offeredServiceRepository;
+    public AppointmentService(AppointmentRepository appointmentRepository, ClientService clientService, ProfessionalService professionalService, OfferedServiceService offeredServiceService) {
+        this.clientService = clientService;
+        this.professionalService = professionalService;
+        this.offeredServiceService = offeredServiceService;
         this.appointmentRepository = appointmentRepository;    }
 
     public Appointment createAppointment(OfferedService offeredService, Professional professional, Client client, LocalDateTime dateTime){
@@ -31,21 +28,12 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
         return appointment;
     }
-
+    
 
     public Appointment createAppointmentWithId(int clientId, int professionalId,int offeredServiceId, LocalDateTime dateTime){
-        var client = clientRepository.findById(clientId);
-        if (client == null){
-            throw new IllegalArgumentException("Client not found with id: "+clientId);
-        }
-        var professional = professionalRepository.findById(professionalId);
-        if(professional == null){
-            throw new IllegalArgumentException("Professional not found with id: "+professionalId);
-        }
-        var offeredService = offeredServiceRepository.findById(offeredServiceId);
-        if(offeredService == null){
-            throw new IllegalArgumentException("Service not found with id: "+offeredServiceId);
-        }
+        var client = clientService.findById(clientId);
+        var professional = professionalService.findById(professionalId);
+        var offeredService = offeredServiceService.findById(offeredServiceId);
 
         var professionalOccupied= appointmentRepository.existsByProfessionalAndDateTime(professional, dateTime);
         if(professionalOccupied){
@@ -70,6 +58,8 @@ public class AppointmentService {
     }
 
     public Appointment findById(int id){
-        return appointmentRepository.findById(id);
+        return appointmentRepository.findById(id)
+                .orElseThrow(()->
+                        new IllegalArgumentException("no appointment found with id: "+id));
     }
 }
