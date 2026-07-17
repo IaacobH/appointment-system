@@ -1,5 +1,6 @@
 package service;
 
+import exception.EntityNotFoundException;
 import model.Professional;
 import repository.ProfessionalRepository;
 
@@ -21,7 +22,7 @@ public class ProfessionalService {
     public Professional findById(int id){
         return professionalRepository.findById(id)
                 .orElseThrow(()->
-                        new IllegalArgumentException("no professional found with id "+id));
+                        new EntityNotFoundException("no professional found with id "+id));
     }
 
     public List<Professional> findAll(){

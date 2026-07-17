@@ -25,7 +25,7 @@ public class Main {
         var professionalService = new ProfessionalService(professionalRepository);
         var offeredServiceService = new OfferedServiceService(offeredServiceRepository);
         var appointmentService = new AppointmentService(
-                appointmentRepository, clientRepository, professionalRepository, offeredServiceRepository);
+                appointmentRepository, clientService, professionalService, offeredServiceService);
 
 
         clientService.register("iaacob", "hambra", "iaacobh@gmail.com");

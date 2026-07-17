@@ -1,5 +1,6 @@
 package service;
 
+import exception.EntityNotFoundException;
 import model.Client;
 import repository.ClientRepository;
 
@@ -24,7 +25,7 @@ public class ClientService {
     public Client findById(int id){
         return clientRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
+                        new EntityNotFoundException(
                                 "Client not found with ID: " + id
                         )
                 );

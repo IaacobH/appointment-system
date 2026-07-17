@@ -1,5 +1,6 @@
 package service;
 
+import exception.EntityNotFoundException;
 import model.OfferedService;
 import repository.OfferedServiceRepository;
 
@@ -22,7 +23,7 @@ public class OfferedServiceService {
     public OfferedService findById(int id) {
         return offeredServiceRepository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("no service found with id: "+id));
+                        new EntityNotFoundException("no service found with id: "+id));
     }
 
     public List<OfferedService> findAll(){

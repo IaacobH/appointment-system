@@ -1,5 +1,7 @@
 package service;
 
+import exception.InvalidAppointmentException;
+import exception.ScheduleConflictException;
 import model.Appointment;
 import model.Client;
 import model.OfferedService;
@@ -37,12 +39,18 @@ public class AppointmentService {
 
         var professionalOccupied= appointmentRepository.existsByProfessionalAndDateTime(professional, dateTime);
         if(professionalOccupied){
-            throw new IllegalArgumentException("El profesional ya tiene un turno fijado a esa hora");
+            throw new ScheduleConflictException("El profesional ya tiene un turno fijado a esa hora");
         }
 
         var clientOccupied = appointmentRepository.existsByClientAndDateTime(client, dateTime);
         if (clientOccupied){
-            throw new IllegalArgumentException("El cliente ya tiene un turno fijado a esa hora");
+            throw new ScheduleConflictException("El cliente ya tiene un turno fijado a esa hora");
+        }
+
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new InvalidAppointmentException(
+                    "Appointment date cannot be in the past"
+            );
         }
 
         var appointment = createAppointment(offeredService, professional, client, dateTime);

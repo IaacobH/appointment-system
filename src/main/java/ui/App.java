@@ -1,5 +1,8 @@
 package ui;
 
+import exception.EntityNotFoundException;
+import exception.InvalidAppointmentException;
+import exception.ScheduleConflictException;
 import model.Appointment;
 import model.Client;
 import service.AppointmentService;
@@ -73,7 +76,7 @@ public class App {
             var appointment = appointmentService.createAppointmentWithId(clientId, professionalId, offeredServiceId, dateTime);
             System.out.println(appointment);
             System.out.println("Appointment created successfully.");
-        } catch (IllegalArgumentException e) {
+        } catch (EntityNotFoundException | InvalidAppointmentException | ScheduleConflictException e) {
             System.out.println(e.getMessage());
         }
     }
