@@ -1,14 +1,11 @@
 package ui;
 
 import model.Appointment;
-import model.Professional;
 import model.Client;
 import service.AppointmentService;
 import service.ClientService;
 import service.OfferedServiceService;
 import service.ProfessionalService;
-
-import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class App {

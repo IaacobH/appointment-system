@@ -32,6 +32,7 @@ public class AppointmentService {
         return appointment;
     }
 
+
     public Appointment createAppointmentWithId(int clientId, int professionalId,int offeredServiceId, LocalDateTime dateTime){
         var client = clientRepository.findById(clientId);
         if (client == null){
@@ -45,11 +46,24 @@ public class AppointmentService {
         if(offeredService == null){
             throw new IllegalArgumentException("Service not found with id: "+offeredServiceId);
         }
+
+        var professionalOccupied= appointmentRepository.existsByProfessionalAndDateTime(professional, dateTime);
+        if(professionalOccupied){
+            throw new IllegalArgumentException("El profesional ya tiene un turno fijado a esa hora");
+        }
+
+        var clientOccupied = appointmentRepository.existsByClientAndDateTime(client, dateTime);
+        if (clientOccupied){
+            throw new IllegalArgumentException("El cliente ya tiene un turno fijado a esa hora");
+        }
+
         var appointment = createAppointment(offeredService, professional, client, dateTime);
         appointmentRepository.save(appointment);
 
         return appointment;
     }
+
+
 
     public List<Appointment> findAll(){
         return appointmentRepository.findAll();

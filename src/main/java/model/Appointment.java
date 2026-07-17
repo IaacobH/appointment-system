@@ -27,6 +27,18 @@ public class Appointment {
         return id;
     }
 
+    public Professional getProfessional() {
+        return professional;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
     public void cancel() {
         this.status = AppointmentStatus.CANCELLED;
     }
