@@ -7,11 +7,7 @@ import service.ClientService;
 import service.OfferedServiceService;
 import service.ProfessionalService;
 import ui.App;
-import ui.InputUtils;
-
-import java.time.LocalDateTime;
 import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {

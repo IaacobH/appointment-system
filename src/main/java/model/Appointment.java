@@ -39,6 +39,10 @@ public class Appointment {
         return dateTime;
     }
 
+    public OfferedService getOfferedService() {
+        return offeredService;
+    }
+
     public void cancel() {
         this.status = AppointmentStatus.CANCELLED;
     }

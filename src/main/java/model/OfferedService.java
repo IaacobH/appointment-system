@@ -18,6 +18,14 @@ public class OfferedService {
         this.id = id;
     }
 
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
     @Override
     public String toString() {
         return "OfferedService{" +

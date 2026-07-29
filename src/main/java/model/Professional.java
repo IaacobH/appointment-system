@@ -9,6 +9,11 @@ public class Professional extends Person{
     }
 
 
+
+    public String getSpeciality() {
+        return speciality;
+    }
+
     @Override
     public String toString() {
         return "Professional {\n" +

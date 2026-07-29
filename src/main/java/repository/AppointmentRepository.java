@@ -13,7 +13,7 @@ import java.util.Optional;
 public class AppointmentRepository {
 
     public final List<Appointment> appointments = new ArrayList<>();
-private int nextId = 1;
+    private int nextId = 1;
 
     public void save(Appointment appointment){
         appointment.setId(nextId);

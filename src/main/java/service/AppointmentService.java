@@ -43,7 +43,7 @@ public class AppointmentService {
         }
 
         var clientOccupied = appointmentRepository.existsByClientAndDateTime(client, dateTime);
-        if (clientOccupied){
+        if (clientOccupied) {
             throw new ScheduleConflictException("El cliente ya tiene un turno fijado a esa hora");
         }
 
@@ -53,19 +53,14 @@ public class AppointmentService {
             );
         }
 
-        var appointment = createAppointment(offeredService, professional, client, dateTime);
-        appointmentRepository.save(appointment);
-
-        return appointment;
+        return createAppointment(offeredService, professional, client, dateTime);
     }
 
-
-
-    public List<Appointment> findAll(){
+    public List<Appointment> findAll() {
         return appointmentRepository.findAll();
     }
 
-    public Appointment findById(int id){
+    public Appointment findById(int id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(()->
                         new IllegalArgumentException("no appointment found with id: "+id));

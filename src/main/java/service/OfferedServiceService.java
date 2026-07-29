@@ -15,9 +15,10 @@ public class OfferedServiceService {
     }
 
 
-    public void register(String serviceName, double price){
+    public OfferedService register(String serviceName, double price){
         OfferedService offeredService = new OfferedService(serviceName, price);
         offeredServiceRepository.save(offeredService);
+        return offeredService;
     }
 
     public OfferedService findById(int id) {

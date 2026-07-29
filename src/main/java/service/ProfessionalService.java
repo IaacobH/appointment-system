@@ -14,9 +14,10 @@ public class ProfessionalService {
         this.professionalRepository = professionalRepository;
     }
 
-    public void register(String name, String lastname, String email, String speciality){
+    public Professional register(String name, String lastname, String email, String speciality){
         Professional professional = new Professional(name, lastname, email, speciality);
         professionalRepository.save(professional);
+        return professional;
     }
 
     public Professional findById(int id){
