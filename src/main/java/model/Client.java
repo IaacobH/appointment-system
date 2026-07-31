@@ -2,8 +2,8 @@ package model;
 
 public class Client extends Person{
 
-    public Client(String name, String lastname,String email) {
-        super(name, lastname, email);
+    public Client(int id, String name, String lastname,String email) {
+        super(id, name, lastname, email);
     }
 
 
