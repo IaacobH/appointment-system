@@ -18,7 +18,7 @@ public class ClientService {
 
     public Client register(String name, String lastname, String email){
         Client client = new Client(name, lastname, email);
-        clientRepository.save(client);
+        client = clientRepository.save(client);
         return client;
     }
 

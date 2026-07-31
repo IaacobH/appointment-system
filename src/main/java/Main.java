@@ -19,6 +19,7 @@ public class Main {
 
         try(Connection connection = DatabaseConnection.getConnection()){
             System.out.println("connected");
+            System.out.println(connection);
             } catch (SQLException e) {
             e.printStackTrace();
         }
