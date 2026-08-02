@@ -17,8 +17,7 @@ public class OfferedServiceService {
 
     public OfferedService register(String serviceName, double price){
         OfferedService offeredService = new OfferedService(serviceName, price);
-        offeredServiceRepository.save(offeredService);
-        return offeredService;
+        return offeredServiceRepository.save(offeredService);
     }
 
     public OfferedService findById(int id) {
