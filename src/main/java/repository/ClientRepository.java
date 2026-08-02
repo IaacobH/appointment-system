@@ -21,7 +21,7 @@ public class ClientRepository {
         ) {
             String sql = """
                     INSERT INTO clients(name, lastname, email)
-                    VALUES(?,?,?)
+                    VALUES(?,?,?);
                     """;
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 

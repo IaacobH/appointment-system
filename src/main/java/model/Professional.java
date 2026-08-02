@@ -8,6 +8,11 @@ public class Professional extends Person{
         this.speciality = speciality;
     }
 
+    public Professional(int id, String name, String lastname, String email, String speciality) {
+        super(id, name, lastname, email);
+        this.speciality = speciality;
+    }
+
 
 
     public String getSpeciality() {
