@@ -16,9 +16,30 @@ public class AppointmentRepository {
     private int nextId = 1;
 
     public void save(Appointment appointment){
-        appointment.setId(nextId);
-        nextId++;
-        appointments.add(appointment);
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+                    INSERT INTO appointments(professional_id, client_id, offered_service_id, datetime)
+                    VALUES(?,?,?,?)
+                    """;
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            var professionalId = appointment.getProfessional().getId();
+            var clientId = appointment.getClient().getId();
+            var  offeredServiceId = appointment.getOfferedService().getId();
+            var datetime = appointment.getDateTime();
+            ps.setInt(1, professionalId);
+            ps.setInt(2, clientId);
+            ps.setInt(3, offeredServiceId);
+            ps.setTimestamp(4, Timestamp.valueOf(datetime));
+
+            ps.executeUpdate();
+            ResultSet key = ps.getGeneratedKeys();
+            if (key.next()){
+                appointment.setId(key.getInt(1));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean existsByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime) {
