@@ -24,6 +24,10 @@ public class OfferedServiceRepository {
                     VALUES(?,?);
                     """;
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, offeredService.getServiceName());
+            ps.setDouble(1, offeredService.getPrice());
+
             ps.executeUpdate();
             ResultSet key = ps.getGeneratedKeys();
             if(key.next()){

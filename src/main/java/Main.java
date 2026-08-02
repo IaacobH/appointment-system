@@ -37,9 +37,9 @@ public class Main {
                 appointmentRepository, clientService, professionalService, offeredServiceService);
 
 
-        clientService.register("iaacob", "hambra", "iaacobh@gmail.com");
-        clientService.register("cliente2", "apellido2", "cli2@gmail.com");
-        clientService.register("cliente3", "apellido3", "cli3@gmail.com");
+//        clientService.register("iaacob", "hambra", "iaacobh@gmail.com");
+//        clientService.register("cliente2", "apellido2", "cli2@gmail.com");
+//        clientService.register("cliente3", "apellido3", "cli3@gmail.com");
 
 
         professionalService.register("carlos", "varela","carlosv@gmail.com","psiquiatra");
