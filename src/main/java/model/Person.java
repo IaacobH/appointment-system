@@ -13,6 +13,12 @@ public abstract class Person {
         this.email = email;
     }
 
+    public Person(String name, String lastname,String email){
+        this.name = name;
+        this.lastname = lastname;
+        this.email = email;
+    }
+
     public int getId() {
         return id;
     }

@@ -6,6 +6,10 @@ public class Client extends Person{
         super(id, name, lastname, email);
     }
 
+    public Client(String name, String lastname,String email) {
+        super(name, lastname, email);
+    }
+
 
     @Override
     public String toString() {
