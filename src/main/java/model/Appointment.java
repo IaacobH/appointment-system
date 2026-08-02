@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDateTime;
 
 public class Appointment {
-    private long id;
+    private int id;
     private OfferedService offeredService;
     private Professional professional;
     private Client client;
@@ -19,11 +19,21 @@ public class Appointment {
 
     }
 
-    public void setId(long id) {
+    public Appointment(int appointmentId, OfferedService offeredService, Professional professional,
+                       Client client, LocalDateTime dateTime, AppointmentStatus status) {
+        this.id = appointmentId;
+        this.offeredService = offeredService;
+        this.professional = professional;
+        this.client = client;
+        this.dateTime = dateTime;
+        this.status = status;
+    }
+
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
