@@ -13,8 +13,6 @@ import java.util.Optional;
 
 public class AppointmentRepository {
 
-    public final List<Appointment> appointments = new ArrayList<>();
-
     public void save(Appointment appointment){
         try(Connection connection = DatabaseConnection.getConnection()){
             String sql = """
@@ -43,21 +41,44 @@ public class AppointmentRepository {
     }
 
     public boolean existsByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime) {
-        return appointments.stream()
-                .anyMatch(appointment ->
-                        appointment.getProfessional().equals(professional)
-                                && appointment.getDateTime().equals(dateTime)
-                                && appointment.getStatus() == AppointmentStatus.SCHEDULED
-                );
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+            SELECT 1
+            FROM appointments
+            WHERE professional_id = ?
+              AND datetime = ?
+              AND status_id = 1
+            LIMIT 1;
+            """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1,professional.getId());
+            ps.setTimestamp(2, Timestamp.valueOf(dateTime));
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public boolean existsByClientAndDateTime(Client client, LocalDateTime dateTime) {
-        return appointments.stream()
-                .anyMatch(appointment ->
-                        appointment.getClient().equals(client)
-                                && appointment.getDateTime().equals(dateTime)
-                                && appointment.getStatus() == AppointmentStatus.SCHEDULED
-                );
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+            SELECT 1
+            FROM appointments
+            WHERE client_id = ?
+              AND datetime = ?
+              AND status_id = 1
+            LIMIT 1;
+            """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1,client.getId());
+            ps.setTimestamp(2, Timestamp.valueOf(dateTime));
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Appointment> findAll(){
