@@ -13,10 +13,7 @@ import java.util.Optional;
 
 public class ClientRepository {
 
-    private final List<Client> clients = new ArrayList<>();
-
     public Client save(Client client) {
-
         try(Connection connection = DatabaseConnection.getConnection();
         ) {
             String sql = """
