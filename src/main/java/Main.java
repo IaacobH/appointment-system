@@ -1,4 +1,3 @@
-import database.DatabaseConnection;
 import repository.AppointmentRepository;
 import repository.ClientRepository;
 import repository.ProfessionalRepository;
@@ -9,22 +8,11 @@ import service.OfferedServiceService;
 import service.ProfessionalService;
 import ui.App;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-
-        try(Connection connection = DatabaseConnection.getConnection()){
-            System.out.println("connected");
-            System.out.println(connection);
-            } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
         var clientRepository = new ClientRepository();
         var professionalRepository = new ProfessionalRepository();
         var offeredServiceRepository = new OfferedServiceRepository();
@@ -36,26 +24,8 @@ public class Main {
         var appointmentService = new AppointmentService(
                 appointmentRepository, clientService, professionalService, offeredServiceService);
 
-
-//        clientService.register("iaacob", "hambra", "iaacobh@gmail.com");
-//        clientService.register("cliente2", "apellido2", "cli2@gmail.com");
-//        clientService.register("cliente3", "apellido3", "cli3@gmail.com");
-
-
-        professionalService.register("carlos", "varela","carlosv@gmail.com","psiquiatra");
-        professionalService.register("pepe", "pereyra","pepepe@gmail.com","masajista");
-
-        offeredServiceService.register("consulta", 10);
-        offeredServiceService.register("masaje", 30);
-
-
         var app = new App();
         app.run(input, clientService, professionalService, offeredServiceService, appointmentService);
-
-
-
-
-
 
     }
 }

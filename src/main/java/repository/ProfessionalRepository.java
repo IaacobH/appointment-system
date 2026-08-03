@@ -12,10 +12,6 @@ import java.util.Optional;
 
 public class ProfessionalRepository {
 
-
-    private final List<Professional> professionals = new ArrayList<>();
-    private int nextId = 1;
-
     public Professional save(Professional professional) {
 
         try(Connection connection = DatabaseConnection.getConnection()){
@@ -41,7 +37,6 @@ public class ProfessionalRepository {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        professionals.add(professional);
         return professional;
     }
 

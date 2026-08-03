@@ -13,10 +13,6 @@ import java.util.Optional;
 
 public class OfferedServiceRepository {
 
-
-    private final List<OfferedService> services = new ArrayList<>();
-    private int nextId = 1;
-
     public OfferedService save(OfferedService offeredService){
         try(Connection connection = DatabaseConnection.getConnection()){
             String sql = """
@@ -67,6 +63,7 @@ public class OfferedServiceRepository {
                     SELECT * FROM offered_services WHERE offered_service_id = ?;
                     """;
             PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()){
                 var offeredService = new OfferedService(
