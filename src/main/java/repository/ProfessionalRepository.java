@@ -23,9 +23,9 @@ public class ProfessionalRepository {
 
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1,professional.getName());
-            ps.setString(1,professional.getLastname());
-            ps.setString(1,professional.getEmail());
-            ps.setString(1,professional.getSpeciality());
+            ps.setString(2,professional.getLastname());
+            ps.setString(3,professional.getEmail());
+            ps.setString(4,professional.getSpeciality());
 
             ps.executeUpdate();
             ResultSet keys = ps.getGeneratedKeys();
