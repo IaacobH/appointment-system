@@ -277,4 +277,32 @@ public class AppointmentRepository {
         }
         return Optional.empty();
     }
+
+    public void updateAppointment(Appointment appointment, int newProfessionalId, int newClientId,
+                                         int newOfferedServiceId, LocalDateTime newDateTime, int newStatusId){
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+                UPDATE appointments
+                SET professional_id = ?,
+                	client_id = ?,
+                	offered_service_id = ?,
+                    datetime = ?,
+                    status_id = ?
+                WHERE appointment_id = ?;
+                """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, newProfessionalId);
+            ps.setInt(2, newClientId);
+            ps.setInt(3, newOfferedServiceId);
+            ps.setTimestamp(4,Timestamp.valueOf(newDateTime));
+            ps.setInt(5,newStatusId);
+            ps.setInt(6,appointment.getId());
+            int rowsAffected = ps.executeUpdate();
+            if(rowsAffected == 0){
+                throw new EntityNotFoundException("appointment to update not found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
