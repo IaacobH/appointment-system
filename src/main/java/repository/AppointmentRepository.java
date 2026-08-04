@@ -181,12 +181,8 @@ public class AppointmentRepository {
                         datetime,
                         status
                 );
-
                 return Optional.of(appointment);
-
             }
-
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -196,8 +192,7 @@ public class AppointmentRepository {
     public void updateAppointment(Appointment appointment, int newProfessionalId, int newClientId,
                                          int newOfferedServiceId, LocalDateTime newDateTime, int newStatusId){
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = AppointmentQueries.UPDATE_APPOINTMENT;
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(AppointmentQueries.UPDATE_APPOINTMENT);
             ps.setInt(1, newProfessionalId);
             ps.setInt(2, newClientId);
             ps.setInt(3, newOfferedServiceId);
@@ -212,4 +207,18 @@ public class AppointmentRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteAppointment(int appointmentId){
+        try(Connection connection = DatabaseConnection.getConnection()){
+            PreparedStatement ps = connection.prepareStatement(AppointmentQueries.DELETE_APPOINTMENT_BY_ID);
+            ps.setInt(1, appointmentId);
+            int rowsAffected = ps.executeUpdate();
+            if(rowsAffected == 0){
+                throw new EntityNotFoundException("appointment to delete with id: "+appointmentId +" not found");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
