@@ -1,12 +1,10 @@
 package repository;
 
 import database.DatabaseConnection;
+import exception.EntityNotFoundException;
 import model.Client;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -105,6 +103,26 @@ public class ClientRepository {
             throw new RuntimeException(e);
         }
         return Optional.empty();
+    }
+
+    public void updateClient(int clientId) {
+
+    }
+
+    public void deleteClient(int clientId) {
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+                    DELETE FROM clients WHERE client_id = ?;
+                    """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1,clientId);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0){
+                throw new EntityNotFoundException("client to delete not found with id: "+clientId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

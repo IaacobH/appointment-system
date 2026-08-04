@@ -1,11 +1,13 @@
 package repository;
 
 import database.DatabaseConnection;
+import exception.EntityNotFoundException;
 import model.Professional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -93,5 +95,25 @@ public class ProfessionalRepository {
             throw new RuntimeException(e);
         }
         return Optional.empty();
+    }
+
+    public void updateProfessional(int professionalId){
+
+    }
+
+    public void deleteProfessional(int professionalId) {
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+                    DELETE FROM clients WHERE client_id = ?;
+                    """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1,professionalId);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0){
+                throw new EntityNotFoundException("professional to delete not found with id: "+professionalId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

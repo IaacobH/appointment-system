@@ -1,12 +1,10 @@
 package repository;
 
 import database.DatabaseConnection;
+import exception.EntityNotFoundException;
 import model.OfferedService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -78,5 +76,25 @@ public class OfferedServiceRepository {
         }
 
         return Optional.empty();
+    }
+
+    public void updateOfferedService(int offeredServiceId){
+
+    }
+
+    public void deleteOfferedService(int offeredServiceId) {
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+                    DELETE FROM clients WHERE client_id = ?;
+                    """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1,offeredServiceId);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0){
+                throw new EntityNotFoundException("offered service to delete not found with id: "+offeredServiceId);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
