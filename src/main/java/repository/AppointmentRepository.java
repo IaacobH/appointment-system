@@ -3,6 +3,7 @@ package repository;
 import database.DatabaseConnection;
 import exception.EntityNotFoundException;
 import model.*;
+import queries.AppointmentQueries;
 import service.OfferedServiceService;
 
 import java.sql.*;
@@ -15,10 +16,7 @@ public class AppointmentRepository {
 
     public void save(Appointment appointment){
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = """
-                    INSERT INTO appointments(professional_id, client_id, offered_service_id, datetime)
-                    VALUES(?,?,?,?)
-                    """;
+            String sql = AppointmentQueries.INSERT;
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             var professionalId = appointment.getProfessional().getId();
@@ -42,14 +40,7 @@ public class AppointmentRepository {
 
     public boolean existsByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime) {
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = """
-            SELECT 1
-            FROM appointments
-            WHERE professional_id = ?
-              AND datetime = ?
-              AND status_id = 1
-            LIMIT 1;
-            """;
+            String sql = AppointmentQueries.EXISTS_PROFESSIONAL_DATETIME;
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1,professional.getId());
             ps.setTimestamp(2, Timestamp.valueOf(dateTime));
@@ -63,14 +54,7 @@ public class AppointmentRepository {
 
     public boolean existsByClientAndDateTime(Client client, LocalDateTime dateTime) {
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = """
-            SELECT 1
-            FROM appointments
-            WHERE client_id = ?
-              AND datetime = ?
-              AND status_id = 1
-            LIMIT 1;
-            """;
+            String sql = AppointmentQueries.EXISTS_CLIENT_DATETIME;
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1,client.getId());
             ps.setTimestamp(2, Timestamp.valueOf(dateTime));
@@ -84,41 +68,7 @@ public class AppointmentRepository {
     public List<Appointment> findAll(){
         List<Appointment> appointments = new ArrayList<>();
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = """
-                    SELECT
-                                    a.appointment_id,
-                                    a.datetime AS appointment_datetime,
-                                    s.appointment_status AS status_name,
-                                
-                                    os.offered_service_id,
-                                    os.service_name AS offered_service_name,
-                                    os.price,
-                                
-                                    p.professional_id,
-                                    p.name AS professional_name,
-                                    p.lastname AS professional_lastname,
-                                    p.speciality,
-                                    p.email AS professional_email,
-                                
-                                    c.client_id,
-                                    c.name AS client_name,
-                                    c.lastname AS client_lastname,
-                                    c.email AS client_email
-                                
-                                FROM appointments a
-                                
-                                JOIN status s
-                                    ON a.status_id = s.status_id
-                                
-                                JOIN offered_services os
-                                    ON a.offered_service_id = os.offered_service_id
-                                
-                                JOIN professionals p
-                                    ON a.professional_id = p.professional_id
-                                
-                                JOIN clients c
-                                    ON a.client_id = c.client_id;                    
-                    """;
+            String sql = AppointmentQueries.FIND_ALL;
 
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -181,42 +131,7 @@ public class AppointmentRepository {
 
     public Optional<Appointment> findById(int id){
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = """
-                    SELECT
-                                    a.appointment_id,
-                                    a.datetime AS appointment_datetime,
-                                    s.appointment_status AS status_name,
-                                
-                                    os.offered_service_id,
-                                    os.service_name AS offered_service_name,
-                                    os.price,
-                                
-                                    p.professional_id,
-                                    p.name AS professional_name,
-                                    p.lastname AS professional_lastname,
-                                    p.speciality,
-                                    p.email AS professional_email,
-                                
-                                    c.client_id,
-                                    c.name AS client_name,
-                                    c.lastname AS client_lastname,
-                                    c.email AS client_email
-                                
-                                FROM appointments a
-                                
-                                JOIN status s
-                                    ON a.status_id = s.status_id
-                                
-                                JOIN offered_services os
-                                    ON a.offered_service_id = os.offered_service_id
-                                
-                                JOIN professionals p
-                                    ON a.professional_id = p.professional_id
-                                
-                                JOIN clients c
-                                    ON a.client_id = c.client_id
-                    WHERE appointment_id = ?;
-                    """;
+            String sql = AppointmentQueries.FIND_BY_ID;
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -281,15 +196,7 @@ public class AppointmentRepository {
     public void updateAppointment(Appointment appointment, int newProfessionalId, int newClientId,
                                          int newOfferedServiceId, LocalDateTime newDateTime, int newStatusId){
         try(Connection connection = DatabaseConnection.getConnection()){
-            String sql = """
-                UPDATE appointments
-                SET professional_id = ?,
-                	client_id = ?,
-                	offered_service_id = ?,
-                    datetime = ?,
-                    status_id = ?
-                WHERE appointment_id = ?;
-                """;
+            String sql = AppointmentQueries.UPDATE_APPOINTMENT;
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, newProfessionalId);
             ps.setInt(2, newClientId);
