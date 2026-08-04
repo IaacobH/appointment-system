@@ -101,5 +101,8 @@ public final class AppointmentQueries {
               AND status_id = 1
             LIMIT 1;
             """;
+    public static final String DELETE_APPOINTMENT_BY_ID= """
+            DELETE FROM appointments WHERE appointment_id = ?
+            """;
 
 }
