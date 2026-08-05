@@ -90,14 +90,22 @@ public class App {
 
     private void handleCancelAppointment(Scanner input, AppointmentService appointmentService) {
         int id = InputUtils.getInt(input, "id: ");
-        var appointment = appointmentService.findById(id);
-        appointment.cancel();
+        try{
+            var appointment = appointmentService.findById(id);
+            appointmentService.cancelAppointment(appointment);
+        } catch (EntityNotFoundException | ScheduleConflictException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void handleCompleteAppointment(Scanner input, AppointmentService appointmentService) {
         int id = InputUtils.getInt(input, "id: ");
-        var appointment = appointmentService.findById(id);
-        appointment.complete();
+        try{
+            var appointment = appointmentService.findById(id);
+            appointmentService.completeAppointment(appointment);
+        } catch (EntityNotFoundException | ScheduleConflictException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void showMenu() {

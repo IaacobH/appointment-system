@@ -1,5 +1,6 @@
 package service;
 
+import exception.EntityNotFoundException;
 import exception.InvalidAppointmentException;
 import exception.ScheduleConflictException;
 import model.Appointment;
@@ -11,6 +12,9 @@ import repository.ProfessionalRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static model.AppointmentStatus.CANCELLED;
+import static model.AppointmentStatus.COMPLETED;
 
 public class AppointmentService {
 
@@ -63,6 +67,37 @@ public class AppointmentService {
     public Appointment findById(int id) {
         return appointmentRepository.findById(id)
                 .orElseThrow(()->
-                        new IllegalArgumentException("no appointment found with id: "+id));
+                        new EntityNotFoundException("no appointment found with id: "+id));
+    }
+
+    public void cancelAppointment(Appointment appointment){
+        if(appointment.getStatus() == CANCELLED){
+            throw new ScheduleConflictException("the appointment is already cancelled");
+        }
+        appointmentRepository.updateAppointment(
+                appointment.getId(),
+                appointment.getProfessional().getId(),
+                appointment.getClient().getId(),
+                appointment.getOfferedService().getId(),
+                appointment.getDateTime(),
+                3
+        );
+    }
+
+    public void completeAppointment(Appointment appointment){
+        if(appointment.getStatus() == COMPLETED){
+            throw new ScheduleConflictException("the appointment is already cancelled");
+        }
+        if(appointment.getStatus() == CANCELLED){
+            throw new ScheduleConflictException("cannot complete a cancelled appointment");
+        }
+        appointmentRepository.updateAppointment(
+                appointment.getId(),
+                appointment.getProfessional().getId(),
+                appointment.getClient().getId(),
+                appointment.getOfferedService().getId(),
+                appointment.getDateTime(),
+                2
+        );
     }
 }
