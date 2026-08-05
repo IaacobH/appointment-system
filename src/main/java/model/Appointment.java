@@ -53,18 +53,6 @@ public class Appointment {
         return offeredService;
     }
 
-    public void cancel() {
-        this.status = AppointmentStatus.CANCELLED;
-    }
-
-    public void complete() {
-        if (status == AppointmentStatus.CANCELLED) {
-            System.out.println("A cancelled appointment cannot be completed.");
-            return;
-        }
-        this.status = AppointmentStatus.COMPLETED;
-    }
-
     public void reprogram(){
         this.status = AppointmentStatus.SCHEDULED;
     }
