@@ -189,7 +189,7 @@ public class AppointmentRepository {
         return Optional.empty();
     }
 
-    public void updateAppointment(Appointment appointment, int newProfessionalId, int newClientId,
+    public void updateAppointment(int appointmentId, int newProfessionalId, int newClientId,
                                          int newOfferedServiceId, LocalDateTime newDateTime, int newStatusId){
         try(Connection connection = DatabaseConnection.getConnection()){
             PreparedStatement ps = connection.prepareStatement(AppointmentQueries.UPDATE_APPOINTMENT);
@@ -198,7 +198,7 @@ public class AppointmentRepository {
             ps.setInt(3, newOfferedServiceId);
             ps.setTimestamp(4,Timestamp.valueOf(newDateTime));
             ps.setInt(5,newStatusId);
-            ps.setInt(6,appointment.getId());
+            ps.setInt(6,appointmentId);
             int rowsAffected = ps.executeUpdate();
             if(rowsAffected == 0){
                 throw new EntityNotFoundException("appointment to update not found");

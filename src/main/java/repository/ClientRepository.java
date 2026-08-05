@@ -105,8 +105,27 @@ public class ClientRepository {
         return Optional.empty();
     }
 
-    public void updateClient(int clientId) {
-
+    public void updateClient(int clientId, String newName, String newLastname, String newEmail) {
+        try(Connection connection = DatabaseConnection.getConnection()){
+            String sql = """
+                    UPDATE clients SET 
+                        name = ?,
+                        lastname = ?,
+                        email = ?
+                    WHERE client_id = ?;
+                    """;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1,newName);
+            ps.setString(2,newLastname);
+            ps.setString(3,newEmail);
+            ps.setInt(4, clientId);
+            int rowsAffected = ps.executeUpdate();
+            if(rowsAffected==0){
+                throw new EntityNotFoundException("client to update not found with id: "+clientId);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void deleteClient(int clientId) {
