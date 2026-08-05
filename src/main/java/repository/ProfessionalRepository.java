@@ -97,7 +97,30 @@ public class ProfessionalRepository {
         return Optional.empty();
     }
 
-    public void updateProfessional(int professionalId){
+    public void updateProfessional(int professionalId, String newName, String newLastname,
+                                   String newEmail, String newSpeciality){
+            try(Connection connection = DatabaseConnection.getConnection()){
+                String sql = """
+                    UPDATE professionals SET 
+                        name = ?,
+                        lastname = ?,
+                        email = ?,
+                        speciality
+                    WHERE professional_id = ?;
+                    """;
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1,newName);
+                ps.setString(2,newLastname);
+                ps.setString(3,newEmail);
+                ps.setString(4,newSpeciality);
+                ps.setInt(5, professionalId);
+                int rowsAffected = ps.executeUpdate();
+                if(rowsAffected==0){
+                    throw new EntityNotFoundException("professional to update not found with id: "+professionalId);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
     }
 

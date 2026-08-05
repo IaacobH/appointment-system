@@ -78,8 +78,25 @@ public class OfferedServiceRepository {
         return Optional.empty();
     }
 
-    public void updateOfferedService(int offeredServiceId){
-
+    public void updateOfferedService(int offeredServiceId, String newName, double newPrice){
+            try(Connection connection = DatabaseConnection.getConnection()){
+                String sql = """
+                    UPDATE offered_services SET 
+                        service_name = ?,
+                        price = ?
+                    WHERE offered_service_id = ?;
+                    """;
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1,newName);
+                ps.setDouble(2,newPrice);
+                ps.setInt(3,offeredServiceId);
+                int rowsAffected = ps.executeUpdate();
+                if(rowsAffected==0){
+                    throw new EntityNotFoundException("offered service to update not found with id: "+offeredServiceId);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
     }
 
     public void deleteOfferedService(int offeredServiceId) {
