@@ -16,9 +16,9 @@ public class ClientService {
     }
 
 
-    public Client register(String name, String lastname, String email){
+    public void register(String name, String lastname, String email){
         Client client = new Client(name, lastname, email);
-        return clientRepository.save(client);
+        clientRepository.save(client);
     }
 
     public Client findById(int id){
@@ -32,5 +32,13 @@ public class ClientService {
 
     public List<Client> findAll(){
         return clientRepository.findAll();
+    }
+
+    public void updateClient(int clientId, String newName,String newLastname, String newEmail){
+        clientRepository.updateClient(clientId, newName, newLastname, newEmail);
+    }
+
+    public void deleteClient(int clientId){
+        clientRepository.deleteClient(clientId);
     }
 }
