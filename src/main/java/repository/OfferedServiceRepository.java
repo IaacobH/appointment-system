@@ -102,7 +102,7 @@ public class OfferedServiceRepository {
     public void deleteOfferedService(int offeredServiceId) {
         try(Connection connection = DatabaseConnection.getConnection()){
             String sql = """
-                    DELETE FROM clients WHERE client_id = ?;
+                    DELETE FROM offered_services WHERE offered_service_id = ?;
                     """;
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1,offeredServiceId);

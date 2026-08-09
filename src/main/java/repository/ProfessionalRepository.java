@@ -105,7 +105,7 @@ public class ProfessionalRepository {
                         name = ?,
                         lastname = ?,
                         email = ?,
-                        speciality
+                        speciality = ?
                     WHERE professional_id = ?;
                     """;
                 PreparedStatement ps = connection.prepareStatement(sql);
@@ -127,7 +127,7 @@ public class ProfessionalRepository {
     public void deleteProfessional(int professionalId) {
         try(Connection connection = DatabaseConnection.getConnection()){
             String sql = """
-                    DELETE FROM clients WHERE client_id = ?;
+                    DELETE FROM clients WHERE professional_id = ?;
                     """;
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1,professionalId);
