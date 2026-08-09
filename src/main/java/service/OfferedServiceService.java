@@ -29,4 +29,12 @@ public class OfferedServiceService {
     public List<OfferedService> findAll(){
         return offeredServiceRepository.findAll();
     }
+
+    public void updateOfferedService(int offeredServiceId, String newName, double newPrice){
+        offeredServiceRepository.updateOfferedService(offeredServiceId, newName, newPrice);
+    }
+
+    public void deleteOfferedService(int id){
+        offeredServiceRepository.deleteOfferedService(id);
+    }
 }

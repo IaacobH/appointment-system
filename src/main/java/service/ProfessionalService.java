@@ -29,4 +29,13 @@ public class ProfessionalService {
     public List<Professional> findAll(){
         return professionalRepository.findAll();
     }
+
+    public void updateProfessional(int professionalId, String newName, String newLastname,
+                                   String newEmail, String newSpeciality){
+        professionalRepository.updateProfessional(professionalId, newName, newLastname, newEmail, newSpeciality);
+    }
+
+    public void deleteProfessional(int professionalId){
+        professionalRepository.deleteProfessional(professionalId);
+    }
 }

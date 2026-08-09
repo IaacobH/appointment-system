@@ -100,4 +100,10 @@ public class AppointmentService {
                 2
         );
     }
+
+    public void updateAppointment(int appointmentId, int newProfessionalId, int newClientId,
+                                  int newOfferedServiceId, LocalDateTime newDateTime, int newStatusId){
+        appointmentRepository.updateAppointment(appointmentId, newProfessionalId, newClientId, newOfferedServiceId,
+                newDateTime, newStatusId);
+    }
 }

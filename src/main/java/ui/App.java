@@ -5,12 +5,14 @@ import exception.InvalidAppointmentException;
 import exception.ScheduleConflictException;
 import model.Appointment;
 import model.Client;
+import model.OfferedService;
 import model.Professional;
-import repository.ClientRepository;
 import service.AppointmentService;
 import service.ClientService;
 import service.OfferedServiceService;
 import service.ProfessionalService;
+
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class App {
@@ -28,8 +30,8 @@ public class App {
             switch (option) {
                 case 1 -> clientsMenu(input, clientService);
                 case 2 -> professionalsMenu(input, professionalService);
-                case 3 -> offeredServicesMenu(input);
-                case 4 -> appointmentsMenu(input);
+                case 3 -> offeredServicesMenu(input, offeredServiceService);
+                case 4 -> appointmentsMenu(input, appointmentService, clientService, professionalService, offeredServiceService);
                 case 5 -> {
                     exit = true;
                     System.out.println("Goodbye!");
@@ -77,7 +79,7 @@ public class App {
         }
     }
 
-    private void offeredServicesMenu(Scanner input) {
+    private void offeredServicesMenu(Scanner input, OfferedServiceService offeredServiceService) {
         boolean back = false;
 
         while (!back) {
@@ -85,18 +87,19 @@ public class App {
             int option = InputUtils.getInt(input, "Choose an option: ");
 
             switch (option) {
-                case 1 -> registerOfferedService();
-                case 2 -> updateOfferedService();
-                case 3 -> deleteOfferedService();
-                case 4 -> showAllOfferedServices();
-                case 5 -> searchOfferedServiceById();
+                case 1 -> registerOfferedService(input, offeredServiceService);
+                case 2 -> updateOfferedService(input, offeredServiceService);
+                case 3 -> deleteOfferedService(input, offeredServiceService);
+                case 4 -> showAllOfferedServices(offeredServiceService);
+                case 5 -> searchOfferedServiceById(input, offeredServiceService);
                 case 6 -> back = true;
                 default -> System.out.println("Invalid option. Please try again.");
             }
         }
     }
 
-    private void appointmentsMenu(Scanner input) {
+    private void appointmentsMenu(Scanner input, AppointmentService appointmentService, ClientService clientService,
+                                    ProfessionalService professionalService, OfferedServiceService offeredServiceService) {
         boolean back = false;
 
         while (!back) {
@@ -104,12 +107,12 @@ public class App {
             int option = InputUtils.getInt(input, "Choose an option: ");
 
             switch (option) {
-                case 1 -> createAppointment();
-                case 2 -> updateAppointment();
-                case 3 -> cancelAppointment();
-                case 4 -> completeAppointment();
-                case 5 -> showAllAppointments();
-                case 6 -> searchAppointmentById();
+                case 1 -> createAppointment(input, clientService, professionalService, offeredServiceService, appointmentService);
+                case 2 -> updateAppointment(input, appointmentService);
+                case 3 -> cancelAppointment(input, appointmentService);
+                case 4 -> completeAppointment(input, appointmentService);
+                case 5 -> showAllAppointments(appointmentService);
+                case 6 -> searchAppointmentById(input, appointmentService);
                 case 7 -> back = true;
                 default -> System.out.println("Invalid option. Please try again.");
             }
@@ -170,23 +173,31 @@ public class App {
 
     private void updateProfessional(Scanner input, ProfessionalService professionalService){
         System.out.println("update professional");
-        var clientId = InputUtils.getInt(input, "Enter client id: ");
+        var professionalId = InputUtils.getInt(input, "Enter professional id: ");
         var newName = InputUtils.getString(input, "Enter the new name: ");
-        var newLastname = InputUtils.getString(input, "Enter the new name: ");
-        var newEmail = InputUtils.getString(input, "Enter the new name: ");
-        professionalService.updateProfessional(clientId, newName, newLastname, newEmail);
+        var newLastname = InputUtils.getString(input, "Enter the new lastname: ");
+        var newEmail = InputUtils.getString(input, "Enter the new email: ");
+        var newSpeciality = InputUtils.getString(input, "Enter the new speciality: ");
+        professionalService.updateProfessional(professionalId, newName, newLastname, newEmail, newSpeciality);
     }
 
-    private void deleteProfessional(){
-
+    private void deleteProfessional(Scanner input, ProfessionalService professionalService){
+        System.out.println("delete professional");
+        var professionalId = InputUtils.getInt(input, "Enter professional id: ");
+        professionalService.deleteProfessional(professionalId);
     }
 
-    private void showAllProfessionals(){
-
+    private void showAllProfessionals(ProfessionalService professionalService){
+        var professionals = professionalService.findAll();
+        for(Professional p : professionals){
+            System.out.println(p);
+        }
     }
 
-    private void searchProfessionalById(){
-
+    private void searchProfessionalById(Scanner input, ProfessionalService professionalService){
+        System.out.println("search professional");
+        var professionalId = InputUtils.getInt(input, "Enter professional id: ");
+        System.out.println(professionalService.findById(professionalId));
     }
 
     private void registerOfferedService(Scanner input, OfferedServiceService offeredServiceService) {
@@ -195,8 +206,36 @@ public class App {
         offeredServiceService.register(name, price);
     }
 
+    private void updateOfferedService(Scanner input, OfferedServiceService offeredServiceService){
+        System.out.println("update offeredService");
+        var offeredServiceId = InputUtils.getInt(input, "Enter offered Service id: ");
+        var newName = InputUtils.getString(input, "Enter the new name: ");
+        var newPrice = InputUtils.getDouble(input, "Enter the new price: ");
+        offeredServiceService.updateOfferedService(offeredServiceId, newName, newPrice);
+    }
+
+    private void deleteOfferedService(Scanner input, OfferedServiceService offeredServiceService){
+        System.out.println("delete offeredService");
+        var offeredServiceId = InputUtils.getInt(input, "Enter offeredService id: ");
+        offeredServiceService.deleteOfferedService(offeredServiceId);
+    }
+
+    private void showAllOfferedServices(OfferedServiceService offeredServiceService){
+        var offeredServices = offeredServiceService.findAll();
+        for(OfferedService o : offeredServices){
+            System.out.println(o);
+        }
+    }
+
+    private void searchOfferedServiceById(Scanner input, OfferedServiceService offeredServiceService){
+        System.out.println("search offeredService");
+        var offeredServiceId = InputUtils.getInt(input, "Enter offeredService id: ");
+        System.out.println(offeredServiceService.findById(offeredServiceId));
+    }
+
     private void createAppointment(Scanner input, ClientService clientService, ProfessionalService professionalService,
                                          OfferedServiceService offeredServiceService, AppointmentService appointmentService) {
+        System.out.println("create appointment");
         System.out.println(clientService.findAll());
         var clientId = InputUtils.getInt(input, "Enter client id: ");
 
@@ -215,6 +254,20 @@ public class App {
         } catch (EntityNotFoundException | InvalidAppointmentException | ScheduleConflictException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void updateAppointment(Scanner input, AppointmentService appointmentService){
+        System.out.println("update appointment");
+        var appointmentId = InputUtils.getInt(input, "Enter appointment id: ");
+        var professionalId = InputUtils.getInt(input, "enter new professional id: ");
+        var clientId = InputUtils.getInt(input, "Enter new client id: ");
+        var offeredServiceId = InputUtils.getInt(input, "enter new service id: ");
+        var dateTime = InputUtils.getLocalDateTime(input);
+        System.out.println("1. Scheduled");
+        System.out.println("2. completed");
+        System.out.println("3. canceled");
+        int newStatusId = InputUtils.getInt(input, "enter new status (1-3): ");
+        appointmentService.updateAppointment(appointmentId, professionalId, clientId, offeredServiceId, dateTime, newStatusId);
     }
 
     private void showAllAppointments(AppointmentService appointmentService) {
@@ -242,6 +295,13 @@ public class App {
         } catch (EntityNotFoundException | ScheduleConflictException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void searchAppointmentById(Scanner input, AppointmentService appointmentService){
+        System.out.println("search appointment");
+        var id = InputUtils.getInt(input, "Enter appointment id: ");
+        var appointment = appointmentService.findById(id);
+        System.out.println(appointment);
     }
 
     public void showMainMenu() {
