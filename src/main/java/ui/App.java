@@ -130,8 +130,8 @@ public class App {
         System.out.println("update client");
         var clientId = InputUtils.getInt(input, "Enter client id: ");
         var newName = InputUtils.getString(input, "Enter the new name: ");
-        var newLastname = InputUtils.getString(input, "Enter the new name: ");
-        var newEmail = InputUtils.getString(input, "Enter the new name: ");
+        var newLastname = InputUtils.getString(input, "Enter the new last name: ");
+        var newEmail = InputUtils.getString(input, "Enter the new email: ");
         clientService.updateClient(clientId, newName, newLastname, newEmail);
     }
 
@@ -184,7 +184,11 @@ public class App {
     private void deleteProfessional(Scanner input, ProfessionalService professionalService){
         System.out.println("delete professional");
         var professionalId = InputUtils.getInt(input, "Enter professional id: ");
-        professionalService.deleteProfessional(professionalId);
+        try{
+            professionalService.deleteProfessional(professionalId);
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void showAllProfessionals(ProfessionalService professionalService){
@@ -197,7 +201,11 @@ public class App {
     private void searchProfessionalById(Scanner input, ProfessionalService professionalService){
         System.out.println("search professional");
         var professionalId = InputUtils.getInt(input, "Enter professional id: ");
-        System.out.println(professionalService.findById(professionalId));
+        try{
+            System.out.println(professionalService.findById(professionalId));
+        }catch (EntityNotFoundException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void registerOfferedService(Scanner input, OfferedServiceService offeredServiceService) {
@@ -217,7 +225,11 @@ public class App {
     private void deleteOfferedService(Scanner input, OfferedServiceService offeredServiceService){
         System.out.println("delete offeredService");
         var offeredServiceId = InputUtils.getInt(input, "Enter offeredService id: ");
-        offeredServiceService.deleteOfferedService(offeredServiceId);
+        try{
+            offeredServiceService.deleteOfferedService(offeredServiceId);
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());;
+        }
     }
 
     private void showAllOfferedServices(OfferedServiceService offeredServiceService){
@@ -300,8 +312,12 @@ public class App {
     private void searchAppointmentById(Scanner input, AppointmentService appointmentService){
         System.out.println("search appointment");
         var id = InputUtils.getInt(input, "Enter appointment id: ");
-        var appointment = appointmentService.findById(id);
-        System.out.println(appointment);
+        try{
+            var appointment = appointmentService.findById(id);
+            System.out.println(appointment);
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());;
+        }
     }
 
     public void showMainMenu() {
