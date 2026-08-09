@@ -86,7 +86,7 @@ public class AppointmentService {
 
     public void completeAppointment(Appointment appointment){
         if(appointment.getStatus() == COMPLETED){
-            throw new ScheduleConflictException("the appointment is already cancelled");
+            throw new ScheduleConflictException("the appointment is already completed");
         }
         if(appointment.getStatus() == CANCELLED){
             throw new ScheduleConflictException("cannot complete a cancelled appointment");
@@ -103,6 +103,25 @@ public class AppointmentService {
 
     public void updateAppointment(int appointmentId, int newProfessionalId, int newClientId,
                                   int newOfferedServiceId, LocalDateTime newDateTime, int newStatusId){
+
+        if (newDateTime.isBefore(LocalDateTime.now())) {
+            throw new InvalidAppointmentException(
+                    "Appointment date cannot be in the past"
+            );
+        }
+
+        var professional = professionalService.findById(newProfessionalId);
+        var professionalOccupied= appointmentRepository.existsByProfessionalAndDateTime(professional, newDateTime);
+        if(professionalOccupied){
+            throw new ScheduleConflictException("El profesional ya tiene un turno fijado a esa hora");
+        }
+
+        var client = clientService.findById(newClientId);
+        var clientOccupied = appointmentRepository.existsByClientAndDateTime(client, newDateTime);
+        if (clientOccupied) {
+            throw new ScheduleConflictException("El cliente ya tiene un turno fijado a esa hora");
+        }
+
         appointmentRepository.updateAppointment(appointmentId, newProfessionalId, newClientId, newOfferedServiceId,
                 newDateTime, newStatusId);
     }
