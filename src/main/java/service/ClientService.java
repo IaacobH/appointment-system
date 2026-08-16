@@ -16,9 +16,10 @@ public class ClientService {
     }
 
 
-    public void register(String name, String lastname, String email){
+    public Client register(String name, String lastname, String email){
         Client client = new Client(name, lastname, email);
         clientRepository.save(client);
+        return  client;
     }
 
     public Client findById(int id){

@@ -3,16 +3,29 @@ package service;
 import exception.EntityNotFoundException;
 import model.Client;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import repository.ClientRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
+
+    @Mock
+    ClientRepository clientRepository;
+
+    @InjectMocks
+    ClientService clientService;
 
     @Test
     void shouldRegisterClient() {
-        ClientRepository clientRepository = new ClientRepository();
-        ClientService clientService = new ClientService(clientRepository);
 
         Client firstClient = clientService.register(
                 "Iaacob",
@@ -20,68 +33,44 @@ class ClientServiceTest {
                 "iaacob@email.com"
         );
 
-        Client secondClient = clientService.register(
-                "Carlos",
-                "Varela",
-                "carlos@email.com"
-        );
-
-        //prueba que sean iguales los datos
         assertEquals("Iaacob", firstClient.getName());
         assertEquals("Hambra", firstClient.getLastname());
         assertEquals("iaacob@email.com", firstClient.getEmail());
 
-        //id asignado correctamente
-        assertEquals(1, firstClient.getId());
-        assertEquals(2, secondClient.getId());
-
+        //verifica que al registrar se llamo al metodo save pasandole por parametro el cliente
+        verify(clientRepository).save(firstClient);
     }
 
     @Test
     void shouldFindAll(){
-        ClientRepository repository = new ClientRepository();
-        ClientService service = new ClientService(repository);
 
-        Client firstClient = service.register(
-                "Iaacob",
-                "Hambra",
-                "iaacob@email.com"
-        );
+        Client c1 = new Client(1, "Iaacob", "Hambra", "iaacob@email.com");
+        Client c2 = new Client(2, "Carlos", "Varela", "carlos@email.com");
+        when(clientRepository.findAll()).thenReturn(List.of(c1, c2));
 
-        Client secondClient = service.register(
-                "Carlos",
-                "Varela",
-                "carlos@email.com"
-        );
+        List<Client> result = clientService.findAll();
 
-        assertTrue(repository.findAll().contains(firstClient));
-        assertTrue(repository.findAll().contains(secondClient));
-        assertEquals(2, repository.findAll().size());
+        assertEquals(2, result.size());
+        assertTrue(result.contains(c1));
+        assertTrue(result.contains(c2));
     }
 
     @Test
     void shouldFindClientById(){
-        ClientRepository repository = new ClientRepository();
-        ClientService service = new ClientService(repository);
 
-        Client registeredClient = service.register(
-                "Iaacob",
-                "Hambra",
-                "iaacob@email.com"
-        );
-        Client foundClient = service.findById(registeredClient.getId());
+        Client fakeClient = new Client(1, "Iaacob", "Hambra", "iaacobh@gmail.com");
+        when(clientRepository.findById(1)).thenReturn(Optional.of(fakeClient));
 
-        assertEquals(registeredClient, foundClient);
+        Client result = clientService.findById(1);
+        assertEquals("iaacob", result.getName());
     }
 
     @Test
     void shouldThrowWhenClientDoesNotExist() {
-        ClientRepository repository = new ClientRepository();
-        ClientService service = new ClientService(repository);
-
+        when(clientRepository.findById(999)).thenReturn(Optional.empty());
         assertThrows(
                 EntityNotFoundException.class,
-                () -> service.findById(999)
+                () -> clientService.findById(999)
         );
     }
 }
