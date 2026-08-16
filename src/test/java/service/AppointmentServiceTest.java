@@ -1,6 +1,11 @@
 package service;
 
+import model.Client;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import repository.AppointmentRepository;
 import repository.ClientRepository;
 import repository.OfferedServiceRepository;
@@ -8,7 +13,14 @@ import repository.ProfessionalRepository;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 
+@ExtendWith(MockitoExtension.class)
 public class AppointmentServiceTest {
+
+    @Mock
+    AppointmentRepository appointmentRepository;
+
+    @InjectMocks
+    AppointmentService appointmentService;
 
     @Test
     void shouldCreateAppointmentAndWithId() {
@@ -22,7 +34,7 @@ public class AppointmentServiceTest {
         var appointmentService = new AppointmentService(appointmentRepository, clientService,
                 professionalService, offeredServiceService);
 
-        var client1 = clientService.register("Iaacob", "Hambra", "iaacob@email.com");
+        Client client1 = clientService.register("Iaacob", "Hambra", "iaacob@email.com");
         var offeredService1 = offeredServiceService.register("name1", 40);
         var professional1 = professionalService.register("name1", "surname1", "email1",
                 "speciality1");
