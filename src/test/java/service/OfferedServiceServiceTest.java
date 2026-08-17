@@ -1,75 +1,87 @@
 package service;
 
 import exception.EntityNotFoundException;
+import model.OfferedService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import repository.OfferedServiceRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+
+@ExtendWith(MockitoExtension.class)
 public class OfferedServiceServiceTest {
+
+    @Mock
+    OfferedServiceRepository offeredServiceRepository;
+
+    @InjectMocks
+    OfferedServiceService offeredServiceService;
+
     @Test
     void shouldRegisterOfferedService(){
-        var offeredServiceRepository = new OfferedServiceRepository();
-        var offeredServiceService = new OfferedServiceService(offeredServiceRepository);
+        when(offeredServiceRepository.save(any(OfferedService.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         var offeredService1 = offeredServiceService.register(
                 "name1",
                 40
         );
-        var offeredService2 = offeredServiceService.register(
-                "name2",
-                20
-        );
 
         assertEquals("name1", offeredService1.getServiceName());
         assertEquals(40, offeredService1.getPrice());
-        assertEquals("name2", offeredService2.getServiceName());
-        assertEquals(20, offeredService2.getPrice());
 
-        assertEquals(1, offeredService1.getId());
-        assertEquals(2, offeredService2.getId());
-
+        verify(offeredServiceRepository).save(offeredService1);
     }
 
 
     @Test
     void shouldFindOfferedServiceById(){
-        var offeredServiceRepository = new OfferedServiceRepository();
-        var offeredServiceService = new OfferedServiceService(offeredServiceRepository);
 
-        var offeredServiceRegistered = offeredServiceService.register(
+        var offeredService1 = new OfferedService(
+                1,
                 "name1",
                 20
         );
+        when(offeredServiceRepository.findById(1)).thenReturn(Optional.of(offeredService1));
 
         var offeredServiceFound = offeredServiceService.findById(1);
-        assertEquals(offeredServiceRegistered, offeredServiceFound);
+        assertEquals(offeredService1, offeredServiceFound);
     }
 
     @Test
     void shouldFindAllOfferedServices(){
-        var offeredServiceRepository = new OfferedServiceRepository();
-        var offeredServiceService = new OfferedServiceService(offeredServiceRepository);
-
-        var offeredService1 = offeredServiceService.register(
+        var o1 = new OfferedService(
+                1,
                 "name1",
                 40
         );
-        var offeredService2 = offeredServiceService.register(
+        var o2 = new OfferedService(
+                2,
                 "name2",
                 20
         );
+        when(offeredServiceRepository.findAll()).thenReturn(List.of(o1,o2));
 
-        assertTrue(offeredServiceService.findAll().contains(offeredService1));
-        assertTrue(offeredServiceService.findAll().contains(offeredService2));
-        assertEquals(2, offeredServiceService.findAll().size());
+        List<OfferedService> offeredServices = offeredServiceService.findAll();
 
+        assertTrue(offeredServices.contains(o1));
+        assertTrue(offeredServices.contains(o2));
+        assertEquals(2, offeredServices.size());
     }
 
     @Test
     void shouldThrowWhenOfferedServiceDoesNotExist() {
-        var offeredServiceRepository = new OfferedServiceRepository();
-        var offeredServiceService = new OfferedServiceService(offeredServiceRepository);
+        when(offeredServiceRepository.findById(999)).thenReturn(Optional.empty());
 
         assertThrows(
                 EntityNotFoundException.class,

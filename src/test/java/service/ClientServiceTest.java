@@ -62,7 +62,7 @@ class ClientServiceTest {
         when(clientRepository.findById(1)).thenReturn(Optional.of(fakeClient));
 
         Client result = clientService.findById(1);
-        assertEquals("iaacob", result.getName());
+        assertEquals("Iaacob", result.getName());
     }
 
     @Test
