@@ -1,7 +1,9 @@
 package service;
 
 import exception.EntityNotFoundException;
+import exception.ScheduleConflictException;
 import model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,13 +29,21 @@ public class AppointmentServiceTest {
     @InjectMocks
     AppointmentService appointmentService;
 
+    Client client;
+    Professional professional;
+    OfferedService offeredService;
+    LocalDateTime dateTime;
+
+    @BeforeEach
+    void setUp() {
+        client = new Client(1, "Iaacob", "Hambra", "iaacob@email.com");
+        professional = new Professional(1, "name1", "surname1", "email1", "speciality1");
+        offeredService = new OfferedService(1, "name1", 40);
+        dateTime = LocalDateTime.of(2030, 10, 10, 10, 10);
+    }
+
     @Test
     void shouldCreateAppointment() {
-        var client = new Client(1, "Iaacob", "Hambra", "iaacob@email.com");
-        var professional = new Professional(1, "name1", "surname1", "email1", "speciality1");
-        var offeredService = new OfferedService(1, "name1", 40);
-        var dateTime = LocalDateTime.of(2026, 12, 25, 18, 30);
-
         var appointment = appointmentService.createAppointment(offeredService, professional, client, dateTime);
 
         assertEquals(offeredService, appointment.getOfferedService());
@@ -45,10 +55,6 @@ public class AppointmentServiceTest {
 
     @Test
     void shouldCreateAppointmentWithId_whenNoConflicts() {
-        var client = new Client(1, "Iaacob", "Hambra", "iaacob@email.com");
-        var professional = new Professional(1, "name1", "surname1", "email1", "speciality1");
-        var offeredService = new OfferedService(1, "name1", 40);
-        var dateTime = LocalDateTime.of(2030, 10, 10, 10, 10);
 
         when(clientService.findById(1)).thenReturn(client);
         when(professionalService.findById(1)).thenReturn(professional);
@@ -66,10 +72,6 @@ public class AppointmentServiceTest {
 
     @Test
     void shouldFindAll(){
-        var client = new Client(1, "Iaacob", "Hambra", "iaacob@email.com");
-        var professional = new Professional(1, "name1", "surname1", "email1", "speciality1");
-        var offeredService = new OfferedService(1, "name1", 40);
-        var dateTime = LocalDateTime.of(2030, 10, 10, 10, 10);
         var a1 = new Appointment(offeredService, professional, client, dateTime);
         var a2 = new Appointment(offeredService, professional, client, dateTime);
 
@@ -84,10 +86,6 @@ public class AppointmentServiceTest {
 
     @Test
     void findById(){
-        var client = new Client(1, "Iaacob", "Hambra", "iaacob@email.com");
-        var professional = new Professional(1, "name1", "surname1", "email1", "speciality1");
-        var offeredService = new OfferedService(1, "name1", 40);
-        var dateTime = LocalDateTime.of(2030, 10, 10, 10, 10);
         var a1 = new Appointment(1,offeredService, professional, client, dateTime, AppointmentStatus.SCHEDULED);
 
         when(appointmentRepository.findById(1)).thenReturn(Optional.of(a1));
@@ -102,6 +100,41 @@ public class AppointmentServiceTest {
         assertThrows(EntityNotFoundException.class,
                 () -> appointmentService.findById(999));
 
+    }
+
+    @Test
+    void shouldCompleteAppointment(){
+        var a1 = new Appointment(1,offeredService, professional, client, dateTime, AppointmentStatus.SCHEDULED);
+
+        appointmentService.completeAppointment(a1);
+        verify(appointmentRepository).updateAppointment(
+                1,
+                professional.getId()
+                ,client.getId(),
+                offeredService.getId(),
+                dateTime,
+                2
+        );
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyCompleted(){
+        var a1 = new Appointment(1,offeredService, professional, client, dateTime, AppointmentStatus.COMPLETED);
+
+        assertThrows(ScheduleConflictException.class,
+                () -> appointmentService.completeAppointment(a1));
+        verify(appointmentRepository, never()).updateAppointment(anyInt(),
+                anyInt(), anyInt(), anyInt(), any(), anyInt());
+    }
+
+    @Test
+    void shouldThrowWhenCancelledCannotBeCompleted(){
+        var a1 = new Appointment(1,offeredService, professional, client, dateTime, AppointmentStatus.CANCELLED);
+
+        assertThrows(ScheduleConflictException.class,
+                () -> appointmentService.completeAppointment(a1));
+        verify(appointmentRepository, never()).updateAppointment(anyInt(),
+                anyInt(), anyInt(), anyInt(), any(), anyInt());
     }
 
 }
