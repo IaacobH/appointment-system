@@ -137,4 +137,26 @@ public class AppointmentServiceTest {
                 anyInt(), anyInt(), anyInt(), any(), anyInt());
     }
 
+    @Test
+    void shouldThrowWhenProfessionalOccupied(){
+        when(professionalService.findById(1)).thenReturn(professional);
+        when(appointmentRepository.existsByProfessionalAndDateTime(professional, dateTime)).thenReturn(true);
+
+        assertThrows(ScheduleConflictException.class,
+                () -> appointmentService.createAppointmentWithId(1, 1, 1, dateTime));
+
+        verify(appointmentRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenClientOccupied(){
+        when(clientService.findById(1)).thenReturn(client);
+        when(appointmentRepository.existsByClientAndDateTime(client,dateTime)).thenReturn(true);
+
+        assertThrows(ScheduleConflictException.class,
+                () -> appointmentService.createAppointmentWithId(1,1,1,dateTime));
+        verify(appointmentRepository, never()).save(any());
+    }
+
+
 }
